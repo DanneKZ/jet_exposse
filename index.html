@@ -3,158 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OSINT_REPORT | TARGET_JET</title>
+    <title>CASE_FILE: 992_JET | EXPOSED_DATABASE</title>
     <style>
-        :root { --accent: #ff0033; --bg: #0a0a0a; --surface: #141414; --text: #e0e0e0; }
-        
+        :root { --danger: #ff0000; --warning: #ffcc00; --bg: #030303; --panel: #0a0a0a; }
         * { cursor: crosshair !important; box-sizing: border-box; }
-        body { 
-            background: var(--bg); color: var(--text); 
-            font-family: 'JetBrains Mono', 'Consolas', monospace; 
-            margin: 0; padding: 0;
-        }
+        body { background: var(--bg); color: #ccc; font-family: 'JetBrains Mono', 'Consolas', monospace; margin: 0; line-height: 1.6; }
 
-        /* الطبقة الشبكية (Grid Background) */
-        body::before {
-            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: radial-gradient(circle, #222 1px, transparent 1px);
-            background-size: 30px 30px; opacity: 0.1; pointer-events: none;
-        }
-
-        /* الشريط العلوي */
-        .top-bar {
-            background: #000; border-bottom: 1px solid #333; padding: 10px 20px;
-            display: flex; justify-content: space-between; font-size: 0.8rem;
-            position: sticky; top: 0; z-index: 1000;
-        }
-
-        .container { max-width: 1400px; margin: auto; padding: 40px 20px; }
-
-        /* البطاقة التعريفية للهدف */
-        .target-profile {
-            display: grid; grid-template-columns: 250px 1fr; gap: 30px;
-            background: var(--surface); border: 1px solid #333; padding: 30px; margin-bottom: 40px;
-        }
-        .target-avatar { width: 100%; aspect-ratio: 1; background: #000; border: 1px solid var(--accent); display: flex; align-items: center; justify-content: center; position: relative; }
-        .target-avatar::after { content: "TARGET_LOCKED"; position: absolute; bottom: -10px; background: var(--accent); color: #000; font-size: 0.6rem; padding: 2px 5px; }
-
-        .data-table { width: 100%; border-collapse: collapse; }
-        .data-table td { padding: 10px; border-bottom: 1px solid #222; font-size: 0.9rem; }
-        .key { color: #666; text-transform: uppercase; width: 150px; }
-        .val { color: var(--accent); font-weight: bold; }
-
-        /* قسم الأدلة */
-        .section-label { color: #fff; font-size: 1.2rem; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; }
-        .section-label::before { content: ""; width: 10px; height: 10px; background: var(--accent); }
-
-        .evidence-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
-        .evidence-card { background: var(--surface); border: 1px solid #333; padding: 10px; position: relative; transition: 0.2s; }
-        .evidence-card:hover { border-color: var(--accent); }
-        .evidence-card img, .evidence-card video { width: 100%; height: 280px; object-fit: contain; background: #050505; }
+        /* شريط الحالة العلوي */
+        .status-bar { background: var(--danger); color: #000; padding: 5px 20px; font-weight: bold; font-size: 0.8rem; display: flex; justify-content: space-between; position: fixed; top: 0; width: 100%; z-index: 2000; }
         
-        .card-meta { margin-top: 10px; font-size: 0.7rem; color: #555; display: flex; justify-content: space-between; }
+        .container { max-width: 1400px; margin: 60px auto 100px; padding: 20px; }
 
-        /* شاشة الـ Terminal في الأسفل */
-        .live-console {
-            position: fixed; bottom: 20px; right: 20px; width: 350px; height: 150px;
-            background: rgba(0,0,0,0.9); border: 1px solid #333; padding: 15px;
-            font-size: 0.7rem; color: #0f0; overflow-y: hidden; z-index: 1000;
-        }
+        /* الملف الشخصي للهدف */
+        .dossier-box { border: 1px solid #333; background: var(--panel); padding: 30px; margin-bottom: 40px; position: relative; }
+        .dossier-header { color: var(--danger); font-size: 2rem; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 20px; text-transform: uppercase; }
+        
+        .target-grid { display: grid; grid-template-columns: 200px 1fr 1fr; gap: 30px; }
+        .data-point { margin-bottom: 15px; }
+        .label { color: #555; font-size: 0.7rem; text-transform: uppercase; }
+        .value { color: var(--danger); font-weight: bold; font-size: 1.1rem; }
 
-        .btn-extract {
-            background: transparent; border: 1px solid var(--accent); color: var(--accent);
-            padding: 20px 40px; text-decoration: none; display: block; width: fit-content;
-            margin: 60px auto; transition: 0.3s; font-size: 1rem;
-        }
-        .btn-extract:hover { background: var(--accent); color: #000; font-weight: bold; }
+        /* قسم تحليل البوتات الخبيثة */
+        .threat-intel { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 40px 0; }
+        .threat-card { border: 1px solid #444; padding: 20px; background: #000; border-radius: 4px; }
+        .bot-img-box { text-align: center; margin-bottom: 15px; }
+        .bot-img { max-height: 120px; width: auto; object-fit: contain; }
+
+        /* قصة Mouse */
+        .story-block { background: rgba(255, 0, 0, 0.03); border-left: 5px solid var(--danger); padding: 25px; margin: 50px 0; }
+        
+        /* قاعدة الأدلة */
+        .evidence-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-top: 30px; }
+        .evidence-card { border: 1px solid #222; background: #000; transition: 0.3s ease; }
+        .evidence-card:hover { border-color: var(--danger); transform: scale(1.03); }
+        .evidence-card img, .evidence-card video { width: 100%; height: 260px; object-fit: contain; display: block; background: #050505; }
+        .evidence-label { padding: 10px; font-size: 0.75rem; color: #555; border-top: 1px solid #222; }
+
+        /* زر التحميل العملاق */
+        .download-btn { display: block; width: fit-content; margin: 80px auto; padding: 25px 60px; border: 3px solid var(--danger); color: var(--danger); text-decoration: none; font-size: 1.8rem; font-weight: bold; transition: 0.4s; background: transparent; }
+        .download-btn:hover { background: var(--danger); color: #000; box-shadow: 0 0 100px var(--danger); }
 
     </style>
 </head>
 <body>
 
-    <div class="top-bar">
-        <span>UNIT: CYBER_JUSTICE</span>
-        <span>STATUS: MONITORING_ACTIVE</span>
-        <span id="clock">00:00:00</span>
+    <div class="status-bar">
+        <span>PROJECT: JET_TERMINATION</span>
+        <span>STATUS: CRITICAL_EXPOSE</span>
+        <span>AUTH: DD1_JR // PAGONI_HAX</span>
     </div>
 
     <div class="container">
         
-        <div class="target-profile">
-            <div class="target-avatar">
-                <img src="assets/Jet%20main%20account!.png" style="width: 90%; filter: contrast(1.5) grayscale(1);">
-            </div>
-            <div>
-                <h2 style="margin: 0 0 20px 0; color: var(--accent);">IDENTIFIED_SUBJECT: JET</h2>
-                <table class="data-table">
-                    <tr><td class="key">Origin:</td><td class="val">SPAIN [ES]</td></tr>
-                    <tr><td class="key">Known Vector:</td><td class="val">DISCORD_NUKER / LOGGER_DISTRIBUTION</td></tr>
-                    <tr><td class="key">Risk Level:</td><td class="val">CRITICAL_THREAT</td></tr>
-                    <tr><td class="key">Database ID:</td><td class="val">#992-JET-EXPOSED</td></tr>
-                </table>
-            </div>
-        </div>
-
-        <div class="section-label">FORENSIC_VIDEO_ANALYSIS</div>
-        <div class="evidence-grid" style="margin-bottom: 50px;">
-            <div class="evidence-card">
-                <video controls><source src="video/proof%20vedio.webm" type="video/webm"></video>
-                <div class="card-meta"><span>VID_01.WEBM</span><span>HASH: D82..A1</span></div>
-            </div>
-            <div class="evidence-card">
-                <video controls><source src="video/proof%20vedio%20%232.webm" type="video/webm"></video>
-                <div class="card-meta"><span>VID_02.WEBM</span><span>HASH: F01..E9</span></div>
+        <div class="dossier-box">
+            <div class="dossier-header">⚠️ TARGET DOSSIER // JET</div>
+            <div class="target-grid">
+                <div>
+                    <img src="assets/Jet%20main%20account!.png" style="width:100%; border:1px solid #333; filter: grayscale(1);">
+                </div>
+                <div>
+                    <div class="data-point"><div class="label">Known Alias</div><div class="value">JET</div></div>
+                    <div class="data-point"><div class="label">Actual Location</div><div class="value">Vancouver, BC, Canada 🇨🇦</div></div>
+                    <div class="data-point"><div class="label">Status</div><div class="value" style="color:var(--warning)">UNDER SURVEILLANCE</div></div>
+                </div>
+                <div>
+                    <div class="data-point"><div class="label">Technical Threat</div><div class="value">"SKID" (Steals Stolen Code)</div></div>
+                    <div class="data-point"><div class="label">Crimes</div><div class="value" style="font-size:0.9rem">Fake Verification Bots // Server Nuking // Account Hijacking</div></div>
+                </div>
             </div>
         </div>
 
-        <div class="section-label">DOCUMENTED_EXHIBITS</div>
+        <div class="section-label" style="font-size: 1.5rem; color:var(--danger); border-left: 10px solid var(--danger); padding-left: 15px; margin-bottom: 20px;">[!] MALICIOUS_BOT_INTELLIGENCE</div>
+        <p style="color:#888;">التحليل التقني للبوتات التي يستخدمها JET لاصطياد الضحايا وتدمير السيرفرات.</p>
+        
+        <div class="threat-intel">
+            <div class="threat-card">
+                <div class="bot-img-box">
+                    <img src="assets/how%20this%20bot%20gets%20ur%20info!.png" class="bot-img">
+                </div>
+                <h4 style="color:var(--warning);">STEALER_BOT (Fake Verification)</h4>
+                <p style="font-size:0.9rem;">
+                    <b>Threat:</b> Grabs PC Info, OAuth Tokens, Local IP, Email Address.<br>
+                    <b>Method:</b> Disguised as a "Verifico App" for server access. **Once you click and authorize, your account is lost.** It creates a fake review server (see image) to look legitimate.
+                </p>
+            </div>
+            <div class="threat-card">
+                <div class="bot-img-box">
+                    <img src="assets/jet's%20nuking%20bot!.png" class="bot-img">
+                </div>
+                <h4 style="color:var(--warning);">NUKE_BOT (Server Destroyer)</h4>
+                <p style="font-size:0.9rem;">
+                    <b>Threat:</b> Full Server liquidation.<br>
+                    <b>Method:</b> The code is **STOLEN** from `Pagoni Hax`. JET is a "skid" and can't code his own bots. He uses other people's malware to do his dirty work.
+                </p>
+            </div>
+        </div>
+
+        <div class="story-block">
+            <h2 style="color:var(--danger); margin-top:0;">> THE MOUSE INCIDENT [CONFIRMED_BREACH]</h2>
+            <p style="color:#fff; font-style: italic;">
+                "RIP mouse account. got hacked by jetx. it logs all ur info"
+            </p>
+            <p style="font-size: 0.9rem; color: #aaa;">
+                الهدف قام باختراق حساب الضحية <b>Mouse</b> بالكامل باستخدام البوت الخبيث المذكور أعلاه. لم يتم اختراق "الروكستار" بل الحساب بأكمله. هذه هي النتيجة الحتمية لمن يثق في بوتات JET.
+            </p>
+        </div>
+
+        <div class="section-label" style="font-size: 1.5rem; color:#fff; border-left: 10px solid #fff; padding-left: 15px; margin-bottom: 20px;">📂 DOCUMENTED EVIDENCE</div>
         <div class="evidence-grid">
-            <div class="evidence-card">
-                <img src="assets/HOW%20to%20feind%20loggers%20%231.png">
-                <div class="card-meta"><span>EXHIBIT_A</span><span>MD5_VERIFIED</span></div>
-            </div>
-            <div class="card"><img src="assets/all%20jets%20accounts!.png"></div>
-            <div class="evidence-card">
-                <img src="assets/My%20nuked%20server.png">
-                <div class="card-meta"><span>CRIME_SCENE_DATA</span><span>TIMESTAMP: 2026-04-27</span></div>
-            </div>
+            <div class="evidence-card"><video controls preload="metadata"><source src="video/proof%20vedio.webm" type="video/webm"></video><div class="evidence-label">SURVEILLANCE_VIDEO_01</div></div>
+            <div class="evidence-card"><video controls preload="metadata"><source src="video/proof%20vedio%20%232.webm" type="video/webm"></video><div class="evidence-label">SURVEILLANCE_VIDEO_02</div></div>
+            <div class="evidence-card"><img src="assets/all%20jets%20accounts!.png"><div class="evidence-label">ACCOUNT_NETWORK_MAP</div></div>
+            <div class="evidence-card"><img src="assets/My%20nuked%20server.png"><div class="evidence-label">SERVER_DESTRUCTION_DATA</div></div>
+            <div class="evidence-card"><img src="assets/Proof%20vs%20jet%20text%20%231.png"><div class="evidence-label">CHAT_LOG_ALPHA</div></div>
+            <div class="evidence-card"><img src="assets/Proof%20vs%20jet%20text%20%232.png"><div class="evidence-label">CHAT_LOG_BETA</div></div>
         </div>
 
-        <a href="https://github.com/DanneKZ/jet_exposse/archive/refs/heads/main.zip" class="btn-extract">EXTRACT_FULL_ARCHIVE_DATA</a>
+        <a href="https://github.com/DanneKZ/jet_exposse/archive/refs/heads/main.zip" class="download-btn">DOWNLOAD FULL LEAK (.ZIP)</a>
 
     </div>
 
-    <div class="live-console" id="console"></div>
+    <footer style="padding: 50px; text-align: center; color: #222; font-size: 0.7rem; border-top: 1px solid #111;">
+        DATABASE_V17 // TRUTH IS AN IRREVERSIBLE ACTION<br>
+        © 2026 CYBER_JUSTICE_UNIT
+    </footer>
 
-    <script>
-        // ساعة النظام
-        setInterval(() => {
-            document.getElementById('clock').innerText = new Date().toLocaleTimeString();
-        }, 1000);
-
-        // سجل العمليات الوهمي الاحترافي
-        const consoleEl = document.getElementById('console');
-        const logs = [
-            "[INFO] Establishing secure link to Spain Node...",
-            "[SUCCESS] Handshake complete.",
-            "[INFO] Fetching target metadata...",
-            "[WARN] Target attempting to mask IP via VPN...",
-            "[SYSTEM] Bypassing proxy... Success.",
-            "[INFO] Logging visitor session ID: " + Math.random().toString(36).substring(7),
-            "[DATA] Correlating Discord ID with documented alts...",
-            "[DATABASE] 14 Files synchronized."
-        ];
-        
-        let logIndex = 0;
-        function addLog() {
-            const p = document.createElement('div');
-            p.innerText = logs[logIndex % logs.length];
-            consoleEl.appendChild(p);
-            if (consoleEl.children.length > 8) consoleEl.removeChild(consoleEl.firstChild);
-            logIndex++;
-            setTimeout(addLog, Math.random() * 3000 + 1000);
-        }
-        addLog();
-    </script>
 </body>
 </html>
