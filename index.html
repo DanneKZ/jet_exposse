@@ -3,140 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JET_EXPOSE | TOTAL_DESTRUCTION</title>
+    <title>JET_EXPOSED | FINAL_ARCHIVE</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Share+Tech+Mono&display=swap');
 
-        :root { --red: #ff0000; --bg: #030000; }
+        :root { --red: #ff0000; --bg: #000; --panel: rgba(20, 0, 0, 0.8); }
 
         * { cursor: crosshair !important; box-sizing: border-box; }
         body { 
-            background: var(--bg); color: #fff; font-family: 'Special Elite', cursive; 
-            margin: 0; overflow-x: hidden; letter-spacing: 1px;
+            background: var(--bg); color: #fff; font-family: 'Share Tech Mono', monospace; 
+            margin: 0; padding: 0; line-height: 1.6;
         }
 
-        /* تأثير التشويش والاهتزاز الكارثي */
-        .overlay {
+        /* تأثير الشاشة المشوشة */
+        .crt-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px);
-            pointer-events: none; z-index: 1000;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        repeating-linear-gradient(0deg, rgba(255, 0, 0, 0.05) 0px, rgba(255, 0, 0, 0.05) 1px, transparent 1px, transparent 2px);
+            pointer-events: none; z-index: 999;
         }
 
-        header {
-            height: 100vh; display: flex; flex-direction: column; justify-content: center;
-            align-items: center; background: radial-gradient(circle, #300 0%, #000 100%);
-            border-bottom: 2px solid var(--red); text-align: center;
+        /* قسم المعلومات (The Dossier) */
+        .dossier {
+            max-width: 900px; margin: 50px auto; border: 2px solid var(--red);
+            padding: 30px; background: var(--panel); position: relative;
         }
+        .dossier-header { color: var(--red); font-size: 1.5rem; text-align: center; border-bottom: 2px solid var(--red); padding-bottom: 10px; margin-bottom: 20px; }
+        .dossier-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .dossier-table td { border: 1px solid #300; padding: 10px; font-size: 0.9rem; }
+        .label { color: var(--red); font-weight: bold; width: 30%; }
 
-        .doom-title {
-            font-size: clamp(3rem, 10vw, 7rem); color: var(--red); margin: 0;
-            text-shadow: 0 0 20px var(--red); animation: shake 0.2s infinite;
+        /* قسم الأدلة */
+        .container { max-width: 1400px; margin: auto; padding: 20px; }
+        .section-title { color: var(--red); font-size: 2rem; border-left: 8px solid var(--red); padding-left: 15px; margin: 60px 0 30px; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+        .card { 
+            background: #0a0000; border: 1px solid #200; overflow: hidden; 
+            transition: 0.3s; position: relative;
         }
+        .card:hover { border-color: var(--red); box-shadow: 0 0 30px var(--red); transform: scale(1.02); }
+        .card img, .card video { width: 100%; height: 280px; object-fit: contain; background: #000; }
 
-        @keyframes shake {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            30% { transform: translate(3px, 2px) rotate(0deg); }
-            50% { transform: translate(-1px, 2px) rotate(1deg); }
-            100% { transform: translate(1px, -2px) rotate(-1deg); }
-        }
+        .info-tag { padding: 10px; background: #100; font-size: 0.8rem; color: var(--red); border-top: 1px solid #200; }
 
-        .container { padding: 50px 20px; max-width: 1500px; margin: auto; }
-        .section-title { 
-            color: var(--red); font-size: 2.5rem; border-left: 10px solid var(--red); 
-            padding-left: 20px; margin: 80px 0 40px; text-transform: uppercase;
+        /* تذييل الصفحة */
+        .final-warning {
+            text-align: center; padding: 100px 20px; background: #050000; border-top: 2px solid var(--red); margin-top: 100px;
         }
+        .burn-text { color: var(--red); font-size: 1.5rem; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
-
-        /* تعديل الكروت لتكون مرعبة */
-        .card {
-            background: #0a0000; border: 1px solid #300; padding: 15px;
-            transition: 0.3s; position: relative; box-shadow: inset 0 0 20px #000;
-        }
-        .card:hover {
-            border-color: var(--red); transform: scale(1.03) rotate(1deg);
-            box-shadow: 0 0 40px rgba(255,0,0,0.5); z-index: 10;
-        }
-
-        .card img, .card video { 
-            width: 100%; height: 350px; object-fit: contain; 
-            background: #000; border: 1px solid #200; filter: sepia(1) hue-rotate(-50deg) contrast(1.2);
-        }
-        .card:hover img, .card:hover video { filter: none; }
-
-        .file-label {
-            margin-top: 15px; color: var(--red); font-size: 0.9rem;
-            border-top: 1px solid #300; padding-top: 10px; display: flex; justify-content: space-between;
-        }
-
-        .footer-action {
-            text-align: center; padding: 150px 20px; background: linear-gradient(to top, #200, #000);
-        }
-        .btn-kill {
-            display: inline-block; padding: 30px 80px; border: 5px solid var(--red);
-            color: var(--red); font-size: 2rem; font-weight: 900; text-decoration: none;
-            transition: 0.3s;
-        }
-        .btn-kill:hover { background: var(--red); color: #000; box-shadow: 0 0 100px var(--red); }
     </style>
 </head>
 <body>
 
-    <div class="overlay"></div>
+    <div class="crt-overlay"></div>
 
-    <header>
-        <p style="letter-spacing: 15px; opacity: 0.6;">SYSTEM BREACH // DD1_JR</p>
-        <h1 class="doom-title">JET_DOOMED</h1>
-        <p style="max-width: 700px; margin-top: 30px; font-size: 1.2rem; color: #888;">
-            "Every action leaves a trace. Every trace leads to justice. Target JET has been identified and neutralized."
-        </p>
-    </header>
+    <div class="dossier">
+        <div class="dossier-header">⚠️ PROJECT_TERMINATION: JET EXPOSED ⚠️</div>
+        <p style="text-align: center; color: #888;">STATUS: CRITICAL_LEAK | OPERATOR: DD1_JR</p>
+        
+        <table class="dossier-table">
+            <tr><td class="label">TARGET</td><td>JET (Identity Tracked)</td></tr>
+            <tr><td class="label">LOCATION</td><td>Spain 🇪🇸 (Verified)</td></tr>
+            <tr><td class="label">OS_FINGERPRINT</td><td>macOS / Safari</td></tr>
+            <tr><td class="label">ATTACK_VECTOR</td><td>Discord Nuking / IP Loggers</td></tr>
+            <tr><td class="label">STATUS</td><td>Under Surveillance</td></tr>
+        </table>
+        
+        <div style="font-size: 0.8rem; color: #666; border-top: 1px solid #300; padding-top: 10px;">
+            PURPOSE: EXPOSING MALICIOUS ACTIVITIES, LOGGERS, AND SERVER NUKING.
+        </div>
+    </div>
 
     <div class="container">
-
-        <div class="section-title">Evidence // Identification</div>
-        <div class="grid">
-            <div class="card"><img src="assets/Jet%20main%20account!.png"><div class="file-label"><span>FILE: TARGET_PROFILE</span><span>[CONFIRMED]</span></div></div>
-            <div class="card"><img src="assets/all%20jets%20accounts!.png"><div class="file-label"><span>FILE: ACCOUNT_NETWORK</span><span>[MAPPED]</span></div></div>
-            <div class="card"><img src="assets/Jet%20alt%20%231.png"><div class="file-label"><span>FILE: ALT_01</span><span>[LOGGED]</span></div></div>
-            <div class="card"><img src="assets/Jet%20alt%20%232.png"><div class="file-label"><span>FILE: ALT_02</span><span>[LOGGED]</span></div></div>
-            <div class="card"><img src="assets/Jet%20alt%20%233.png"><div class="file-label"><span>FILE: ALT_03</span><span>[LOGGED]</span></div></div>
-        </div>
-
-        <div class="section-title">Evidence // Cyber_Crimes</div>
-        <div class="grid">
-            <div class="card"><img src="assets/HOW%20to%20feind%20loggers%20%231.png"><div class="file-label"><span>TRACER: LOGGER_01</span><span>[POSITIVE]</span></div></div>
-            <div class="card"><img src="assets/HOW%20to%20feind%20loggers%20%237.png"><div class="file-label"><span>TRACER: LOGGER_07</span><span>[POSITIVE]</span></div></div>
-            <div class="card"><img src="assets/proof%20vs%20JET!.png"><div class="file-label"><span>DATA: DIRECT_PROOF</span><span>[CRITICAL]</span></div></div>
-            <div class="card"><img src="assets/My%20nuked%20server.png"><div class="file-label"><span>IMPACT: SERVER_LOSS</span><span>[VERIFIED]</span></div></div>
-        </div>
-
-        <div class="section-title">Evidence // Surveillance_Feeds</div>
+        
+        <div class="section-header section-title">📺 SURVEILLANCE VIDEOS</div>
         <div class="grid">
             <div class="card">
-                <video controls><source src="assets/proof%20vedio.webm" type="video/webm"></video>
-                <div class="file-label"><span>VIDEO: SURVEILLANCE_A</span><span>[LIVE]</span></div>
+                <video controls preload="auto" width="100%">
+                    <source src="assets/proof%20vedio.webm" type="video/webm">
+                    Your browser does not support webm.
+                </video>
+                <div class="info-tag">LIVE_RECORDING_A: ACTIVE_EXPLOITATION</div>
             </div>
             <div class="card">
-                <video controls><source src="assets/proof%20vedio%20%232.webm" type="video/webm"></video>
-                <div class="file-label"><span>VIDEO: SURVEILLANCE_B</span><span>[LIVE]</span></div>
+                <video controls preload="auto" width="100%">
+                    <source src="assets/proof%20vedio%20%232.webm" type="video/webm">
+                    Your browser does not support webm.
+                </video>
+                <div class="info-tag">LIVE_RECORDING_B: MALICIOUS_INTENT</div>
             </div>
         </div>
 
+        <div class="section-title">📂 EVIDENCE DATABASE</div>
+        <div class="grid">
+            <div class="card"><img src="assets/Jet%20main%20account!.png"><div class="info-tag">MAIN_ACCOUNT_ID</div></div>
+            <div class="card"><img src="assets/all%20jets%20accounts!.png"><div class="info-tag">ACCOUNT_NETWORK_MAP</div></div>
+            <div class="card"><img src="assets/Jet%20alt%20%231.png"><div class="info-tag">ALT_01</div></div>
+            <div class="card"><img src="assets/Jet%20alt%20%235.png"><div class="info-tag">ALT_05</div></div>
+            
+            <div class="card"><img src="assets/HOW%20to%20feind%20loggers%20%231.png"><div class="info-tag">LOGGER_DETECTION_01</div></div>
+            <div class="card"><img src="assets/HOW%20to%20feind%20loggers%20%237.png"><div class="info-tag">LOGGER_DETECTION_07</div></div>
+            
+            <div class="card"><img src="assets/My%20nuked%20server.png"><div class="info-tag">CRIME_SCENE_01</div></div>
+            <div class="card"><img src="assets/MY%20discord%20server%20got%20nuked.png"><div class="info-tag">CRIME_SCENE_02</div></div>
+        </div>
     </div>
 
-    <div class="footer-action">
-        <h2 style="margin-bottom: 50px; font-size: 3rem;">FINAL_DATABASE_SYNC</h2>
-        <a href="#" class="btn-kill">DOWNLOAD_FULL_LEAK.ZIP</a>
+    <div class="final-warning">
+        <h2 class="burn-text">🛑 FINAL WARNING 🛑</h2>
+        <p style="max-width: 800px; margin: 20px auto; font-style: italic;">
+            "You thought you could hide behind a browser and a VPN. Every action has a digital footprint. This repository is now a global record of your failure."
+        </p>
+        <div style="color: #444; font-size: 0.8rem; margin-top: 50px;">
+            [ EXIT_LOGS ] SYSTEM_LOCKDOWN: FALSE | RECOVERY: IN_PROGRESS | JUSTICE: SERVED<br>
+            © 2026 DD1_JR // CYBER_JUSTICE_UNIT
+        </div>
     </div>
 
-    <script>
-        // تأثير اهتزاز الشاشة عند الضغط
-        document.body.addEventListener('click', () => {
-            document.body.style.animation = 'none';
-            setTimeout(() => { document.body.style.animation = 'shake 0.1s linear 3'; }, 10);
-        });
-    </script>
 </body>
 </html>
