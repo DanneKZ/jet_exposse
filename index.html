@@ -3,124 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JET_TERMINATED | GLOBAL_DATABASE</title>
+    <title>JET_EXPOSED | FINAL_LEAK</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-
-        :root { --red: #ff0000; --bg: #020202; --glow: #ff000044; }
-
-        * { cursor: crosshair !important; box-sizing: border-box; scroll-behavior: smooth; }
-        body { background: var(--bg); color: #fff; font-family: 'Share Tech Mono', monospace; margin: 0; }
-
-        /* تأثير شاشة المراقبة */
-        .vignette { position: fixed; top: 0; left: 0; width: 100%; height: 100%; box-shadow: inset 0 0 150px #000; pointer-events: none; z-index: 1000; }
-        .scanlines { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02)); background-size: 100% 2px, 3px 100%; z-index: 999; pointer-events: none; }
-
-        /* Dossier Style */
-        .container { max-width: 1200px; margin: auto; padding: 40px 20px; }
-        .dossier-box { border: 2px solid var(--red); background: rgba(20, 0, 0, 0.6); padding: 30px; margin-bottom: 50px; position: relative; box-shadow: 0 0 20px var(--glow); }
-        .dossier-header { color: var(--red); font-size: 1.8rem; border-bottom: 2px solid var(--red); padding-bottom: 10px; margin-bottom: 20px; text-transform: uppercase; }
+        :root { --red: #ff0000; --bg: #000; }
+        * { cursor: crosshair !important; box-sizing: border-box; }
+        body { background: var(--bg); color: #fff; font-family: 'Share Tech Mono', monospace; margin: 0; overflow-x: hidden; }
         
-        table { width: 100%; border-spacing: 0 10px; }
-        td { padding: 8px; border-bottom: 1px solid #200; font-size: 1rem; }
-        .key { color: var(--red); width: 30%; font-weight: bold; }
+        /* تأثير Dossier */
+        .dossier { max-width: 900px; margin: 40px auto; border: 2px solid var(--red); padding: 25px; background: rgba(20, 0, 0, 0.7); box-shadow: 0 0 20px rgba(255,0,0,0.3); }
+        .dossier h2 { color: var(--red); text-align: center; border-bottom: 2px solid var(--red); padding-bottom: 10px; }
+        .info-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #300; font-size: 0.9rem; }
+        .label { color: var(--red); font-weight: bold; }
 
-        .section-title { color: var(--red); font-size: 2.2rem; margin: 60px 0 30px; border-left: 10px solid var(--red); padding-left: 20px; text-transform: uppercase; }
-
-        /* Grid & Cards */
+        .container { max-width: 1400px; margin: auto; padding: 20px; }
+        .section-title { color: var(--red); font-size: 2rem; border-left: 8px solid var(--red); padding-left: 15px; margin: 60px 0 30px; text-transform: uppercase; }
+        
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; }
-        .card { background: #080000; border: 1px solid #300; transition: 0.3s; position: relative; overflow: hidden; }
-        .card:hover { border-color: var(--red); transform: scale(1.02); box-shadow: 0 0 30px var(--glow); }
-        
-        /* Video Fix */
-        video, img { width: 100%; height: 300px; object-fit: contain; background: #000; display: block; }
+        .card { background: #0a0000; border: 1px solid #200; overflow: hidden; transition: 0.3s; position: relative; }
+        .card:hover { border-color: var(--red); box-shadow: 0 0 30px var(--red); transform: scale(1.02); }
+        .card img, .card video { width: 100%; height: 300px; object-fit: contain; background: #000; }
 
-        .label { padding: 15px; background: #110000; color: var(--red); font-size: 0.8rem; border-top: 1px solid #300; display: flex; justify-content: space-between; }
-
-        /* زر التحميل "الفعال" */
+        /* زر التحميل الفعال */
         .download-btn {
-            display: block; width: 100%; max-width: 600px; margin: 80px auto; padding: 30px;
+            display: block; width: 100%; max-width: 500px; margin: 80px auto; padding: 25px;
             background: transparent; border: 3px solid var(--red); color: var(--red);
-            font-size: 1.8rem; font-weight: bold; text-align: center; text-decoration: none;
-            transition: 0.4s; position: relative; overflow: hidden;
+            font-size: 1.5rem; font-weight: bold; text-align: center; text-decoration: none; transition: 0.4s;
         }
-        .download-btn:hover { background: var(--red); color: #000; box-shadow: 0 0 80px var(--red); }
-        .download-btn::after { content: ' [FILES_READY]'; font-size: 0.8rem; vertical-align: middle; }
-
-        footer { text-align: center; padding: 60px; opacity: 0.4; border-top: 1px solid #200; font-size: 0.7rem; }
-
+        .download-btn:hover { background: var(--red); color: #000; box-shadow: 0 0 50px var(--red); }
     </style>
 </head>
 <body>
 
-    <div class="vignette"></div>
-    <div class="scanlines"></div>
+    <div class="dossier">
+        <h2>⚠️ PROJECT_TERMINATION: JET EXPOSED ⚠️</h2>
+        <div class="info-row"><span class="label">STATUS:</span><span>CRITICAL_LEAK</span></div>
+        <div class="info-row"><span class="label">TARGET:</span><span>JET (Identity Tracked)</span></div>
+        <div class="info-row"><span class="label">LOCATION:</span><span>Spain 🇪🇸 (Verified)</span></div>
+        <div class="info-row"><span class="label">OS:</span><span>macOS / Safari</span></div>
+        <div class="info-row"><span class="label">OPERATOR:</span><span>DD1_JR</span></div>
+    </div>
 
     <div class="container">
-        <div class="dossier-box">
-            <div class="dossier-header">⚠️ PROJECT_TERMINATION: JET_DOSSIER</div>
-            <table>
-                <tr><td class="key">STATUS:</td><td style="color: #0f0;">CRITICAL_LEAK</td></tr>
-                <tr><td class="key">TARGET:</td><td>JET (Identity Tracked)</td></tr>
-                <tr><td class="key">LOCATION:</td><td>Spain 🇪🇸 (Verified)</td></tr>
-                <tr><td class="key">OS_INTEL:</td><td>macOS / Safari</td></tr>
-                <tr><td class="key">VECTOR:</td><td>Discord Nuking / IP Loggers</td></tr>
-                <tr><td class="key">OPERATOR:</td><td>DD1_JR</td></tr>
-            </table>
-        </div>
-
-        <div class="section-title">📺 SURVEILLANCE_VIDEO_FEEDS</div>
+        <div class="section-title">📺 SURVEILLANCE VIDEOS</div>
         <div class="grid">
             <div class="card">
                 <video controls preload="metadata">
-                    <source src="assets/proof1.webm" type="video/webm">
-                    <source src="assets/proof%20vedio.webm" type="video/webm">
+                    <source src="video/proof%20vedio.webm" type="video/webm">
                 </video>
-                <div class="label"><span>SURVEILLANCE_A</span><span>[RECORDING]</span></div>
+                <div style="padding:10px; color:var(--red);">FILE: surveillance_alpha.webm</div>
             </div>
             <div class="card">
                 <video controls preload="metadata">
-                    <source src="assets/proof2.webm" type="video/webm">
-                    <source src="assets/proof%20vedio%20%232.webm" type="video/webm">
+                    <source src="video/proof%20vedio%20%232.webm" type="video/webm">
                 </video>
-                <div class="label"><span>SURVEILLANCE_B</span><span>[RECORDING]</span></div>
+                <div style="padding:10px; color:var(--red);">FILE: surveillance_beta.webm</div>
             </div>
         </div>
 
-        <div class="section-title">📂 EVIDENCE_DATABASE</div>
+        <div class="section-title">📂 EVIDENCE DATABASE</div>
         <div class="grid">
-            <div class="card"><img src="assets/Jet%20main%20account!.png"><div class="label">TARGET_ID</div></div>
-            <div class="card"><img src="assets/all%20jets%20accounts!.png"><div class="label">NETWORK_MAP</div></div>
-            <div class="card"><img src="assets/HOW%20to%20feind%20loggers%20%231.png"><div class="label">LOGGER_01</div></div>
-            <div class="card"><img src="assets/HOW%20to%20feind%20loggers%20%237.png"><div class="label">LOGGER_07</div></div>
-            <div class="card"><img src="assets/My%20nuked%20server.png"><div class="label">CRIME_SCENE_A</div></div>
-            <div class="card"><img src="assets/MY%20discord%20server%20got%20nuked.png"><div class="label">CRIME_SCENE_B</div></div>
-        </div>
-
-        <a href="https://github.com/DanneKZ/jet_exposse/archive/refs/heads/main.zip" class="download-btn">
-            DOWNLOAD FULL EVIDENCE PACK
-        </a>
-
-        <div class="dossier-box" style="text-align: center; border-style: dashed;">
-            <h3 style="color: var(--red);">🛑 FINAL_WARNING</h3>
-            <p>"You thought you could hide behind a browser and a VPN. Every action has a digital footprint. This repository is now a global record of your failure."</p>
+            <div class="card"><img src="assets/Jet%20main%20account!.png"></div>
+            <div class="card"><img src="assets/all%20jets%20accounts!.png"></div>
+            <div class="card"><img src="assets/HOW%20to%20feind%20loggers%20%231.png"></div>
+            <div class="card"><img src="assets/HOW%20to%20feind%20loggers%20%237.png"></div>
+            <div class="card"><img src="assets/My%20nuked%20server.png"></div>
+            <div class="card"><img src="assets/MY%20discord%20server%20got%20nuked.png"></div>
         </div>
     </div>
 
-    <footer>
-        [ EXIT_LOGS ] SYSTEM_LOCKDOWN: FALSE | RECOVERY: IN_PROGRESS | JUSTICE: SERVED<br>
+    <a href="https://github.com/DanneKZ/jet_exposse/archive/refs/heads/main.zip" class="download-btn">
+        DOWNLOAD_FULL_EVIDENCE.ZIP
+    </a>
+
+    <footer style="text-align: center; padding: 40px; opacity: 0.5; font-size: 0.8rem;">
+        "Every action has a digital footprint. Justice is served."<br>
         © 2026 DD1_JR // CYBER_JUSTICE_UNIT
     </footer>
 
-    <script>
-        // ميزة إضافية: عند الضغط على أي فيديو، تومض الشاشة باللون الأحمر
-        const videos = document.querySelectorAll('video');
-        videos.forEach(v => {
-            v.onplay = () => {
-                document.body.style.boxShadow = "inset 0 0 100px rgba(255,0,0,0.5)";
-                setTimeout(() => { document.body.style.boxShadow = "none"; }, 500);
-            };
-        });
-    </script>
 </body>
 </html>
