@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JET_EXPOSED | DATABASE_V5</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --main-red: #ff0000; --bg: #000; --card: rgba(15, 0, 0, 0.9); }
+        * { cursor: crosshair !important; box-sizing: border-box; }
+        body { background: var(--bg); color: #fff; font-family: 'Share Tech Mono', monospace; margin: 0; overflow-x: hidden; }
+
+        /* Background Matrix Red */
+        canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.15; }
+
+        .scanline { width: 100%; height: 100px; background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(255,0,0,0.1) 50%, rgba(0,0,0,0) 100%); position: fixed; top: -100px; animation: scan 4s linear infinite; z-index: 1000; pointer-events: none; }
+        @keyframes scan { 0% { top: -100px; } 100% { top: 100%; } }
+
+        header { padding: 100px 20px; text-align: center; border-bottom: 2px solid var(--main-red); background: radial-gradient(circle, #200 0%, #000 100%); }
+        .glitch { font-size: 5rem; font-weight: 900; color: var(--main-red); text-transform: uppercase; position: relative; display: inline-block; }
+        .glitch::before { content: attr(data-text); position: absolute; left: -2px; text-shadow: 2px 0 blue; top: 0; color: white; background: black; overflow: hidden; clip: rect(0, 900px, 0, 0); animation: noise-1 2s infinite linear alternate-reverse; }
+        @keyframes noise-1 { 0% { clip: rect(20px, 9999px, 50px, 0); } 100% { clip: rect(80px, 9999px, 90px, 0); } }
+
+        .section-title { color: var(--main-red); padding: 20px; border-left: 5px solid var(--main-red); background: #050000; margin: 40px 0 20px 0; letter-spacing: 5px; }
+
+        /* Evidence Gallery */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; padding: 20px; }
+        .card { background: var(--card); border: 1px solid #300; padding: 15px; transition: 0.3s; }
+        .card:hover { border-color: var(--main-red); box-shadow: 0 0 20px rgba(255,0,0,0.3); }
+        .card img, .card video { width: 100%; height: 250px; object-fit: cover; border: 1px solid #222; }
+        .card p { font-size: 0.8rem; color: #888; margin-top: 10px; }
+
+        /* Target Profile */
+        .target-box { background: #100; border: 2px dashed var(--main-red); padding: 30px; margin: 20px; display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
+        .account-list { list-style: none; padding: 0; }
+        .account-list li { padding: 5px 0; color: #00d2ff; border-bottom: 1px solid #111; }
+
+        .hell-btn { display: block; width: 100%; max-width: 400px; margin: 50px auto; padding: 20px; background: var(--main-red); color: #fff; text-decoration: none; font-weight: 900; font-size: 1.5rem; text-align: center; border: 4px solid #fff; transition: 0.3s; }
+        .hell-btn:hover { background: #fff; color: #f00; transform: scale(1.1); }
+    </style>
+</head>
+<body>
+
+    <div class="scanline"></div>
+    <canvas id="m"></canvas>
+
+    <header>
+        <div class="glitch" data-text="JET_TERMINATED">JET_TERMINATED</div>
+        <p style="color: #fff; opacity: 0.6;">EVIDENCE_DATABASE // COMPILED_BY_DD1_JR</p>
+    </header>
+
+    <div class="target-box">
+        <div>
+            <img src="Jet main account!.png" style="width: 100%; border: 2px solid var(--main-red);">
+            <h3 style="text-align: center;">TARGET: JET</h3>
+        </div>
+        <div>
+            <h3 style="color: var(--main-red);">KNOWN_ACCOUNTS_DATABASE:</h3>
+            <ul class="account-list">
+                <li>> MAIN_ACCOUNT: (See Profile Image)</li>
+                <li>> ALT_01: Jet alt #1</li>
+                <li>> ALT_02: Jet alt #2</li>
+                <li>> ALT_03: Jet alt #3</li>
+                <li>> ALT_04: Jet alt #4</li>
+                <li>> ALT_05: Jet alt #5</li>
+                <li>> DISCOVERY: all jets accounts!.png</li>
+            </ul>
+            <p style="color: #555;">OS: macOS | LOC: Spain | LOGGERS: Detected</p>
+        </div>
+    </div>
+
+    <h2 class="section-title">CRIME_SCENE: SERVER_NUKES</h2>
+    <div class="grid">
+        <div class="card"><img src="My nuked server.png"><p>MY_SERVER: DESTRUCTION_PROOFS</p></div>
+        <div class="card"><img src="MY discord server got nuked.png"><p>LOG: NUKING_IN_PROGRESS</p></div>
+        <div class="card"><img src="jet server.png"><p>TARGET_SERVER: LOCATED</p></div>
+    </div>
+
+    <h2 class="section-title">FORENSIC_EVIDENCE (LOGGERS & CHATS)</h2>
+    <div class="grid">
+        <div class="card"><img src="proof vs JET!.jpg"><p>PRIMARY_PROOFS</p></div>
+        <div class="card"><img src="HOW to feind loggers #1.png"><p>LOGGER_DETECTION_01</p></div>
+        <div class="card"><img src="HOW to feind loggers #2.png"><p>LOGGER_DETECTION_02</p></div>
+        <div class="card"><img src="HOW to feind loggers #3.png"><p>LOGGER_DETECTION_03</p></div>
+        <div class="card"><img src="HOW to feind loggers #4.png"><p>LOGGER_DETECTION_04</p></div>
+        <div class="card"><img src="HOW to feind loggers #6.png"><p>LOGGER_DETECTION_06</p></div>
+        <div class="card"><img src="HOW to feind loggers #7.jpg"><p>LOGGER_DETECTION_07</p></div>
+        <div class="card"><img src="Proof vs jet text #2.png"><p>CHAT_LOGS_EXPOSED</p></div>
+    </div>
+
+    <h2 class="section-title">VIDEO_SURVEILLANCE</h2>
+    <div class="grid">
+        <div class="card"><video controls><source src="proof vedio.webm" type="video/webm"></video><p>RECORDING_A</p></div>
+        <div class="card"><video controls><source src="proof vedio #2.webm" type="video/webm"></video><p>RECORDING_B</p></div>
+    </div>
+
+    <section style="background: #100; padding: 100px 20px; text-align: center;">
+        <h1 style="font-size: 3rem; color: var(--main-red);">DOWNLOAD_THE_VIRUS_REPORT</h1>
+        <p>Full archive of JET's malicious activities and scripts.</p>
+        <a href="THE_FILE_YOU_WANT_TO_DOWNLOAD.zip" class="hell-btn">DOWNLOAD_FULL_EVIDENCE.ZIP</a>
+        <h2 style="margin-top: 50px; color: #444;">YOU THOUGHT YOU WERE ANONYMOUS? YOU WERE WRONG.</h2>
+    </section>
+
+    <script>
+        const canvas = document.getElementById('m');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        const columns = Array(Math.floor(canvas.width/20)).fill(0);
+        function step() {
+            ctx.fillStyle = 'rgba(0,0,0,0.05)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = '#f00'; ctx.font = '15px monospace';
+            columns.forEach((y, i) => {
+                ctx.fillText(String.fromCharCode(33+Math.random()*94), i*20, y);
+                if(y > canvas.height && Math.random() > 0.975) columns[i] = 0;
+                else columns[i] += 20;
+            });
+        }
+        setInterval(step, 50);
+    </script>
+</body>
+</html>
