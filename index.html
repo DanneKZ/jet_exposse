@@ -3,121 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FATAL_ERROR | JET_DATABASE</title>
+    <title>TERMINAL_JET | INTERCEPT_V13</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
-
-        :root { --red: #ff0000; --dark: #050000; }
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+        :root { --red: #ff0000; --neon-green: #0f0; --bg: #000; }
 
         * { cursor: crosshair !important; box-sizing: border-box; }
-        body { background: var(--dark); color: #0f0; font-family: 'VT323', monospace; margin: 0; overflow-x: hidden; }
+        body { background: var(--bg); color: #fff; font-family: 'Share Tech Mono', monospace; margin: 0; overflow-x: hidden; }
 
-        /* تأثير الشاشة المكسورة */
-        .scanlines { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03)); background-size: 100% 2px, 3px 100%; z-index: 1000; pointer-events: none; }
+        /* شاشة التعقب الجانبية (Fake Logger UI) */
+        #tracker {
+            position: fixed; top: 20px; right: 20px; width: 250px; background: rgba(0, 20, 0, 0.8);
+            border: 1px solid var(--neon-green); padding: 15px; font-size: 0.7rem; color: var(--neon-green);
+            z-index: 2000; box-shadow: 0 0 15px var(--neon-green);
+        }
 
-        header { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; border-bottom: 2px solid var(--red); background: radial-gradient(circle, #200 0%, #000 100%); position: relative; }
-        
-        .target-box { position: absolute; border: 1px solid var(--red); width: 200px; height: 200px; animation: rotate 10s linear infinite; opacity: 0.3; }
-        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        header {
+            height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            border-bottom: 2px solid var(--red); position: relative; background: radial-gradient(circle, #200 0%, #000 100%);
+        }
 
-        .glitch { font-size: 5rem; color: var(--red); text-transform: uppercase; animation: glitch 0.1s infinite; letter-spacing: 10px; }
-        @keyframes glitch { 0% { transform: skew(2deg); } 50% { transform: skew(-2deg); text-shadow: 2px 0 blue; } 100% { transform: skew(1deg); } }
+        .alert-banner {
+            position: absolute; top: 0; width: 100%; background: var(--red); color: #000;
+            text-align: center; font-weight: bold; padding: 10px; animation: flash 1s infinite;
+        }
+        @keyframes flash { 0% { opacity: 1; } 50% { opacity: 0.5; } }
 
-        .console-text { color: #0f0; font-size: 1.2rem; margin-top: 20px; text-shadow: 0 0 5px #0f0; }
+        .glitch-large { font-size: 6rem; color: var(--red); text-shadow: 3px 3px #fff; animation: glitch 0.2s infinite; }
+        @keyframes glitch { 0% { transform: translate(2px,0); } 50% { transform: translate(-2px,0); } }
 
         .container { max-width: 1300px; margin: auto; padding: 50px 20px; }
-        .section-header { color: var(--red); font-size: 2rem; border-bottom: 1px solid var(--red); margin: 60px 0 30px; display: flex; justify-content: space-between; }
-
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
-        .card { background: #000; border: 1px solid #333; transition: 0.3s; position: relative; }
-        .card:hover { border-color: var(--red); transform: scale(1.05); box-shadow: 0 0 50px rgba(255,0,0,0.5); }
-        .card img, .card video { width: 100%; height: 350px; object-fit: contain; filter: grayscale(1) brightness(0.7); transition: 0.5s; }
-        .card:hover img, .card:hover video { filter: grayscale(0) brightness(1); }
 
-        .download-btn { display: block; width: 100%; max-width: 600px; margin: 80px auto; padding: 30px; border: 2px solid var(--red); color: var(--red); font-size: 2rem; text-align: center; text-decoration: none; transition: 0.3s; background: transparent; }
+        /* الكروت المحسنة */
+        .card { 
+            background: #050000; border: 1px solid #300; position: relative; 
+            transition: 0.3s; filter: brightness(0.6);
+        }
+        .card:hover { filter: brightness(1); border-color: var(--red); transform: scale(1.02); }
+        .card img, .card video { width: 100%; height: 320px; object-fit: contain; }
+
+        .label { padding: 15px; background: #110000; color: var(--red); font-size: 0.9rem; border-top: 1px solid #300; }
+
+        .download-btn {
+            display: block; width: 100%; max-width: 600px; margin: 80px auto; padding: 30px;
+            border: 2px solid var(--red); color: var(--red); font-size: 2rem; text-align: center;
+            text-decoration: none; transition: 0.3s;
+        }
         .download-btn:hover { background: var(--red); color: #000; box-shadow: 0 0 100px var(--red); }
-
-        /* تنبيه الاختراق */
-        #alert-box { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 50px; background: var(--red); color: white; font-size: 3rem; font-weight: bold; display: none; z-index: 9999; }
     </style>
 </head>
-<body oncontextmenu="return showWarning();">
+<body>
 
-    <div class="scanlines"></div>
-    <div id="alert-box">SECURITY BREACH: IP LOGGED</div>
+    <div id="tracker">
+        [ SYSTEM_STATUS: MONITORING ]<br>
+        > CONNECTION: ACTIVE<br>
+        > PACKETS: INTERCEPTED<br>
+        > TARGET_OS: <span id="user-os">DETECTING...</span><br>
+        > TRACING_ROUTE...<br>
+        <span id="random-ip"></span>
+    </div>
 
     <header>
-        <div class="target-box"></div>
-        <h1 class="glitch">JET_DOOMED</h1>
-        <div class="console-text" id="typewriter">Initializing reconnaissance...</div>
-        <div style="margin-top: 100px; color: var(--red); font-weight: bold;">[ TARGET_LOCATION: SPAIN // ACCESS: GRANTED ]</div>
+        <div class="alert-banner">CRITICAL_SECURITY_BREACH // UNAUTHORIZED_ACCESS_DETECTED</div>
+        <h1 class="glitch-large">TARGET: JET</h1>
+        <p style="color: var(--neon-green); letter-spacing: 5px;">LOCATION_LOCKED: SPAIN_GRID_82.11</p>
     </header>
 
     <div class="container">
-        
-        <div style="border: 1px solid #0f0; padding: 20px; margin-bottom: 50px; background: rgba(0,20,0,0.2);">
-            <div style="color: #0f0; margin-bottom: 10px;">> SUBJECT: JET</div>
-            <div style="color: #0f0; margin-bottom: 10px;">> CRIME: SERVER_NUKING / IP_LOGGING</div>
-            <div style="color: #0f0; margin-bottom: 10px;">> EVIDENCE_COUNT: 14_FILES_VERIFIED</div>
-            <div style="color: #0f0; margin-bottom: 10px;">> THREAT_LEVEL: <span style="color: var(--red);">EXTREME</span></div>
+        <div style="border: 1px dotted var(--red); padding: 30px; margin-bottom: 50px; background: rgba(20,0,0,0.4);">
+            <h3 style="color: var(--red); margin-top: 0;">💀 SUBJECT_DOSSIER: JET</h3>
+            <p>NAME: JET [REDACTED]<br>KNOWN_FOR: DISCORD_NUKING, MALICIOUS_LOGGING<br>THREAT_LEVEL: BLACK_LISTED</p>
         </div>
 
-        <div class="section-header"><span>01_VIDEO_SURVEILLANCE</span><span>[LIVE]</span></div>
         <div class="grid">
             <div class="card">
                 <video controls><source src="video/proof%20vedio.webm" type="video/webm"></video>
-                <div style="padding:10px;">LOG: SURVEILLANCE_01.WEBEM</div>
+                <div class="label">RECORDING_A_SURVEILLANCE</div>
             </div>
             <div class="card">
                 <video controls><source src="video/proof%20vedio%20%232.webm" type="video/webm"></video>
-                <div style="padding:10px;">LOG: SURVEILLANCE_02.WEBEM</div>
+                <div class="label">RECORDING_B_SURVEILLANCE</div>
             </div>
+
+            <div class="card"><img src="assets/Jet%20main%20account!.png"><div class="label">EVIDENCE_MAIN_ACC</div></div>
+            <div class="card"><img src="assets/HOW%20to%20feind%20loggers%20%231.png"><div class="label">LOG_REPORT_01</div></div>
+            <div class="card"><img src="assets/My%20nuked%20server.png"><div class="label">IMPACT_ZONE_01</div></div>
         </div>
 
-        <div class="section-header"><span>02_FORENSIC_DATABASE</span><span>[ENCRYPTED]</span></div>
-        <div class="grid">
-            <div class="card"><img src="assets/Jet%20main%20account!.png"></div>
-            <div class="card"><img src="assets/all%20jets%20accounts!.png"></div>
-            <div class="card"><img src="assets/HOW%20to%20feind%20loggers%20%231.png"></div>
-            <div class="card"><img src="assets/HOW%20to%20feind%20loggers%20%237.png"></div>
-            <div class="card"><img src="assets/My%20nuked%20server.png"></div>
-            <div class="card"><img src="assets/MY%20discord%20server%20got%20nuked.png"></div>
-        </div>
-
-        <a href="https://github.com/DanneKZ/jet_exposse/archive/refs/heads/main.zip" class="download-btn">
-            EXTRACT_ALL_EVIDENCE.ZIP
-        </a>
-
+        <a href="https://github.com/DanneKZ/jet_exposse/archive/refs/heads/main.zip" class="download-btn">EXTRACT_FULL_DB.ZIP</a>
     </div>
 
-    <footer style="text-align: center; padding: 50px; color: #222; font-size: 0.8rem;">
-        "Every byte is a witness. You can't delete the truth."
-    </footer>
-
     <script>
-        // تأثير التايب رايتر (Terminal)
-        const text = "Searching local network... Found: JET_MACBOOK_PRO... Accessing logs... Spain_Proxy_Detected... Recording user interaction... Done.";
-        let i = 0;
-        function typeWriter() {
-            if (i < text.length) {
-                document.getElementById("typewriter").innerHTML += text.charAt(i);
-                i++;
-                setTimeout(typeWriter, 50);
-            }
-        }
-        window.onload = typeWriter;
+        // سكريبت إظهار معلومات "وهمية" مرعبة للزائر
+        document.getElementById('user-os').innerText = navigator.platform;
+        
+        setInterval(() => {
+            const ip = "TRACE: " + Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255);
+            document.getElementById('random-ip').innerText = ip;
+        }, 1000);
 
-        // تحذير عند الضغط كليك يمين (منع JET من محاولة التلاعب)
-        function showWarning() {
-            const box = document.getElementById('alert-box');
-            box.style.display = 'block';
-            document.body.style.backgroundColor = 'red';
-            setTimeout(() => { 
-                box.style.display = 'none'; 
-                document.body.style.backgroundColor = '#050000';
-            }, 500);
-            return false;
-        }
+        // منع السرقة أو فحص الكود (حرب نفسية)
+        document.onkeydown = function(e) {
+            if(e.keyCode == 123) return false; // F12
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false; // Ctrl+Shift+I
+        };
     </script>
 </body>
 </html>
