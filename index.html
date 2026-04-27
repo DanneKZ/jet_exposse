@@ -3,144 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FATAL_ERROR | JET_DESTRUCTION</title>
+    <title>JET_EXPOSE | TOTAL_DESTRUCTION</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
 
-        :root { --red: #ff0000; --dark-red: #440000; --bg: #000; }
+        :root { --red: #ff0000; --bg: #030000; }
 
         * { cursor: crosshair !important; box-sizing: border-box; }
         body { 
-            background: var(--bg); color: #fff; font-family: 'Share Tech Mono', monospace; 
-            margin: 0; overflow-x: hidden;
-            background-image: radial-gradient(circle at center, #1a0000 0%, #000 100%);
+            background: var(--bg); color: #fff; font-family: 'Special Elite', cursive; 
+            margin: 0; overflow-x: hidden; letter-spacing: 1px;
         }
 
-        /* تأثير شاشة الـ CRT (الرعب التقني) */
-        body::before {
-            content: " "; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 200; background-size: 100% 2px, 3px 100%; pointer-events: none;
+        /* تأثير التشويش والاهتزاز الكارثي */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px);
+            pointer-events: none; z-index: 1000;
         }
-
-        /* خط الـ Scanline المتحرك */
-        .scanline {
-            width: 100%; height: 3px; background: rgba(255, 0, 0, 0.1);
-            position: fixed; top: 0; z-index: 201; animation: scanning 6s linear infinite;
-        }
-        @keyframes scanning { 0% { top: 0; } 100% { top: 100%; } }
 
         header {
-            height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            border-bottom: 5px solid var(--red); position: relative; text-align: center;
+            height: 100vh; display: flex; flex-direction: column; justify-content: center;
+            align-items: center; background: radial-gradient(circle, #300 0%, #000 100%);
+            border-bottom: 2px solid var(--red); text-align: center;
         }
 
-        .glitch-title {
-            font-size: 6rem; color: var(--red); text-transform: uppercase;
-            text-shadow: 2px 2px #fff, -2px -2px blue; animation: glitch 0.2s infinite;
+        .doom-title {
+            font-size: clamp(3rem, 10vw, 7rem); color: var(--red); margin: 0;
+            text-shadow: 0 0 20px var(--red); animation: shake 0.2s infinite;
         }
 
-        @keyframes glitch {
-            0% { transform: translate(0); }
-            20% { transform: translate(-3px, 3px); }
-            40% { transform: translate(-3px, -3px); }
-            60% { transform: translate(3px, 3px); }
-            80% { transform: translate(3px, -3px); }
-            100% { transform: translate(0); }
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            50% { transform: translate(-1px, 2px) rotate(1deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
         }
 
-        .warning-text { color: #fff; background: var(--red); padding: 5px 20px; font-weight: bold; margin-top: 20px; }
-
-        .container { padding: 50px 20px; max-width: 1600px; margin: auto; }
-
-        .evidence-section { margin-bottom: 100px; }
-        .section-label { color: var(--red); font-size: 2rem; border-bottom: 2px solid var(--red); margin-bottom: 30px; display: inline-block; }
+        .container { padding: 50px 20px; max-width: 1500px; margin: auto; }
+        .section-title { 
+            color: var(--red); font-size: 2.5rem; border-left: 10px solid var(--red); 
+            padding-left: 20px; margin: 80px 0 40px; text-transform: uppercase;
+        }
 
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
 
+        /* تعديل الكروت لتكون مرعبة */
         .card {
-            background: #080000; border: 1px solid #300; padding: 10px;
-            transition: 0.3s; position: relative; filter: grayscale(1);
+            background: #0a0000; border: 1px solid #300; padding: 15px;
+            transition: 0.3s; position: relative; box-shadow: inset 0 0 20px #000;
         }
         .card:hover {
-            filter: grayscale(0); border-color: var(--red); transform: scale(1.05);
-            box-shadow: 0 0 50px rgba(255, 0, 0, 0.4); z-index: 10;
+            border-color: var(--red); transform: scale(1.03) rotate(1deg);
+            box-shadow: 0 0 40px rgba(255,0,0,0.5); z-index: 10;
         }
 
-        .card img, .card video { width: 100%; height: 300px; object-fit: contain; background: #000; }
-
-        .info { padding: 15px; background: #110000; color: #ff9999; font-size: 0.9rem; border-top: 1px solid #300; }
-
-        /* زر التحميل النهائي */
-        .burn-button {
-            display: block; width: 100%; max-width: 500px; margin: 100px auto; padding: 30px;
-            background: transparent; border: 4px solid var(--red); color: var(--red);
-            font-size: 2rem; font-weight: bold; text-align: center; text-decoration: none;
-            transition: 0.4s; position: relative;
+        .card img, .card video { 
+            width: 100%; height: 350px; object-fit: contain; 
+            background: #000; border: 1px solid #200; filter: sepia(1) hue-rotate(-50deg) contrast(1.2);
         }
-        .burn-button:hover { background: var(--red); color: #000; transform: skew(-5deg); box-shadow: 0 0 100px var(--red); }
+        .card:hover img, .card:hover video { filter: none; }
 
+        .file-label {
+            margin-top: 15px; color: var(--red); font-size: 0.9rem;
+            border-top: 1px solid #300; padding-top: 10px; display: flex; justify-content: space-between;
+        }
+
+        .footer-action {
+            text-align: center; padding: 150px 20px; background: linear-gradient(to top, #200, #000);
+        }
+        .btn-kill {
+            display: inline-block; padding: 30px 80px; border: 5px solid var(--red);
+            color: var(--red); font-size: 2rem; font-weight: 900; text-decoration: none;
+            transition: 0.3s;
+        }
+        .btn-kill:hover { background: var(--red); color: #000; box-shadow: 0 0 100px var(--red); }
     </style>
 </head>
 <body>
 
-    <div class="scanline"></div>
+    <div class="overlay"></div>
 
     <header>
-        <div style="font-size: 1rem; letter-spacing: 10px;">DD1_JR SQUAD PRESENT</div>
-        <h1 class="glitch-title">JET_DOOM</h1>
-        <div class="warning-text">CLASSIFIED EVIDENCE: DO NOT LEAK</div>
-        <p style="margin-top: 50px; opacity: 0.5;">Target: JET | Origin: Spain | Status: EXPOSED</p>
+        <p style="letter-spacing: 15px; opacity: 0.6;">SYSTEM BREACH // DD1_JR</p>
+        <h1 class="doom-title">JET_DOOMED</h1>
+        <p style="max-width: 700px; margin-top: 30px; font-size: 1.2rem; color: #888;">
+            "Every action leaves a trace. Every trace leads to justice. Target JET has been identified and neutralized."
+        </p>
     </header>
 
     <div class="container">
 
-        <div class="evidence-section">
-            <span class="section-label">01 // TARGETS</span>
-            <div class="grid">
-                <div class="card"><img src="assets/Jet main account!.png"><div class="info">FILE: MAIN_TARGET_ID</div></div>
-                <div class="card"><img src="assets/all jets accounts!.png"><div class="info">FILE: ACCOUNT_MAP</div></div>
-                <div class="card"><img src="assets/Jet alt #1.png"><div class="info">FILE: ALT_01</div></div>
-                <div class="card"><img src="assets/Jet alt #2.png"><div class="info">FILE: ALT_02</div></div>
-                <div class="card"><img src="assets/Jet alt #3.png"><div class="info">FILE: ALT_03</div></div>
-            </div>
+        <div class="section-title">Evidence // Identification</div>
+        <div class="grid">
+            <div class="card"><img src="assets/Jet%20main%20account!.png"><div class="file-label"><span>FILE: TARGET_PROFILE</span><span>[CONFIRMED]</span></div></div>
+            <div class="card"><img src="assets/all%20jets%20accounts!.png"><div class="file-label"><span>FILE: ACCOUNT_NETWORK</span><span>[MAPPED]</span></div></div>
+            <div class="card"><img src="assets/Jet%20alt%20%231.png"><div class="file-label"><span>FILE: ALT_01</span><span>[LOGGED]</span></div></div>
+            <div class="card"><img src="assets/Jet%20alt%20%232.png"><div class="file-label"><span>FILE: ALT_02</span><span>[LOGGED]</span></div></div>
+            <div class="card"><img src="assets/Jet%20alt%20%233.png"><div class="file-label"><span>FILE: ALT_03</span><span>[LOGGED]</span></div></div>
         </div>
 
-        <div class="evidence-section">
-            <span class="section-label">02 // FORENSIC_LOGS</span>
-            <div class="grid">
-                <div class="card"><img src="assets/HOW to feind loggers #1.png"><div class="info">LOGGER: DETECTED_01</div></div>
-                <div class="card"><img src="assets/HOW to feind loggers #4.png"><div class="info">LOGGER: DETECTED_04</div></div>
-                <div class="card"><img src="assets/HOW to feind loggers #7.png"><div class="info">LOGGER: DETECTED_07</div></div>
-                <div class="card"><img src="assets/proof vs JET!.png"><div class="info">PROOFS: CRITICAL</div></div>
-            </div>
+        <div class="section-title">Evidence // Cyber_Crimes</div>
+        <div class="grid">
+            <div class="card"><img src="assets/HOW%20to%20feind%20loggers%20%231.png"><div class="file-label"><span>TRACER: LOGGER_01</span><span>[POSITIVE]</span></div></div>
+            <div class="card"><img src="assets/HOW%20to%20feind%20loggers%20%237.png"><div class="file-label"><span>TRACER: LOGGER_07</span><span>[POSITIVE]</span></div></div>
+            <div class="card"><img src="assets/proof%20vs%20JET!.png"><div class="file-label"><span>DATA: DIRECT_PROOF</span><span>[CRITICAL]</span></div></div>
+            <div class="card"><img src="assets/My%20nuked%20server.png"><div class="file-label"><span>IMPACT: SERVER_LOSS</span><span>[VERIFIED]</span></div></div>
         </div>
 
-        <div class="evidence-section">
-            <span class="section-label">03 // LIVE_RECORDINGS</span>
-            <div class="grid">
-                <div class="card"><video controls><source src="assets/proof vedio.webm" type="video/webm"></video><div class="info">SURVEILLANCE_VIDEO_01</div></div>
-                <div class="card"><video controls><source src="assets/proof vedio #2.webm" type="video/webm"></video><div class="info">SURVEILLANCE_VIDEO_02</div></div>
+        <div class="section-title">Evidence // Surveillance_Feeds</div>
+        <div class="grid">
+            <div class="card">
+                <video controls><source src="assets/proof%20vedio.webm" type="video/webm"></video>
+                <div class="file-label"><span>VIDEO: SURVEILLANCE_A</span><span>[LIVE]</span></div>
             </div>
-        </div>
-
-        <div class="evidence-section">
-            <span class="section-label">04 // CASUALTIES</span>
-            <div class="grid">
-                <div class="card"><img src="assets/My nuked server.png"><div class="info">DATA: MY_SERVER_NUKED</div></div>
-                <div class="card"><img src="assets/MY discord server got nuked.png"><div class="info">DATA: NUKING_IN_PROGRESS</div></div>
-                <div class="card"><img src="assets/My account suspend.png"><div class="info">DATA: ACCOUNT_LOST</div></div>
+            <div class="card">
+                <video controls><source src="assets/proof%20vedio%20%232.webm" type="video/webm"></video>
+                <div class="file-label"><span>VIDEO: SURVEILLANCE_B</span><span>[LIVE]</span></div>
             </div>
         </div>
 
     </div>
 
-    <a href="#" class="burn-button">DOWNLOAD FULL DESTRUCTION FILE (.ZIP)</a>
+    <div class="footer-action">
+        <h2 style="margin-bottom: 50px; font-size: 3rem;">FINAL_DATABASE_SYNC</h2>
+        <a href="#" class="btn-kill">DOWNLOAD_FULL_LEAK.ZIP</a>
+    </div>
 
-    <footer style="text-align: center; padding: 50px; opacity: 0.2; font-size: 0.8rem;">
-        SYSTEM_V8.0 // BY DD1_JR // JUSTICE_SERVED
-    </footer>
-
+    <script>
+        // تأثير اهتزاز الشاشة عند الضغط
+        document.body.addEventListener('click', () => {
+            document.body.style.animation = 'none';
+            setTimeout(() => { document.body.style.animation = 'shake 0.1s linear 3'; }, 10);
+        });
+    </script>
 </body>
 </html>
