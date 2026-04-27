@@ -3,111 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TERMINAL_JET | INTERCEPT_V13</title>
+    <title>OSINT_REPORT | TARGET_JET</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-        :root { --red: #ff0000; --neon-green: #0f0; --bg: #000; }
-
+        :root { --accent: #ff0033; --bg: #0a0a0a; --surface: #141414; --text: #e0e0e0; }
+        
         * { cursor: crosshair !important; box-sizing: border-box; }
-        body { background: var(--bg); color: #fff; font-family: 'Share Tech Mono', monospace; margin: 0; overflow-x: hidden; }
-
-        /* شاشة التعقب الجانبية (Fake Logger UI) */
-        #tracker {
-            position: fixed; top: 20px; right: 20px; width: 250px; background: rgba(0, 20, 0, 0.8);
-            border: 1px solid var(--neon-green); padding: 15px; font-size: 0.7rem; color: var(--neon-green);
-            z-index: 2000; box-shadow: 0 0 15px var(--neon-green);
+        body { 
+            background: var(--bg); color: var(--text); 
+            font-family: 'JetBrains Mono', 'Consolas', monospace; 
+            margin: 0; padding: 0;
         }
 
-        header {
-            height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            border-bottom: 2px solid var(--red); position: relative; background: radial-gradient(circle, #200 0%, #000 100%);
+        /* الطبقة الشبكية (Grid Background) */
+        body::before {
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(circle, #222 1px, transparent 1px);
+            background-size: 30px 30px; opacity: 0.1; pointer-events: none;
         }
 
-        .alert-banner {
-            position: absolute; top: 0; width: 100%; background: var(--red); color: #000;
-            text-align: center; font-weight: bold; padding: 10px; animation: flash 1s infinite;
+        /* الشريط العلوي */
+        .top-bar {
+            background: #000; border-bottom: 1px solid #333; padding: 10px 20px;
+            display: flex; justify-content: space-between; font-size: 0.8rem;
+            position: sticky; top: 0; z-index: 1000;
         }
-        @keyframes flash { 0% { opacity: 1; } 50% { opacity: 0.5; } }
 
-        .glitch-large { font-size: 6rem; color: var(--red); text-shadow: 3px 3px #fff; animation: glitch 0.2s infinite; }
-        @keyframes glitch { 0% { transform: translate(2px,0); } 50% { transform: translate(-2px,0); } }
+        .container { max-width: 1400px; margin: auto; padding: 40px 20px; }
 
-        .container { max-width: 1300px; margin: auto; padding: 50px 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
-
-        /* الكروت المحسنة */
-        .card { 
-            background: #050000; border: 1px solid #300; position: relative; 
-            transition: 0.3s; filter: brightness(0.6);
+        /* البطاقة التعريفية للهدف */
+        .target-profile {
+            display: grid; grid-template-columns: 250px 1fr; gap: 30px;
+            background: var(--surface); border: 1px solid #333; padding: 30px; margin-bottom: 40px;
         }
-        .card:hover { filter: brightness(1); border-color: var(--red); transform: scale(1.02); }
-        .card img, .card video { width: 100%; height: 320px; object-fit: contain; }
+        .target-avatar { width: 100%; aspect-ratio: 1; background: #000; border: 1px solid var(--accent); display: flex; align-items: center; justify-content: center; position: relative; }
+        .target-avatar::after { content: "TARGET_LOCKED"; position: absolute; bottom: -10px; background: var(--accent); color: #000; font-size: 0.6rem; padding: 2px 5px; }
 
-        .label { padding: 15px; background: #110000; color: var(--red); font-size: 0.9rem; border-top: 1px solid #300; }
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table td { padding: 10px; border-bottom: 1px solid #222; font-size: 0.9rem; }
+        .key { color: #666; text-transform: uppercase; width: 150px; }
+        .val { color: var(--accent); font-weight: bold; }
 
-        .download-btn {
-            display: block; width: 100%; max-width: 600px; margin: 80px auto; padding: 30px;
-            border: 2px solid var(--red); color: var(--red); font-size: 2rem; text-align: center;
-            text-decoration: none; transition: 0.3s;
+        /* قسم الأدلة */
+        .section-label { color: #fff; font-size: 1.2rem; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; }
+        .section-label::before { content: ""; width: 10px; height: 10px; background: var(--accent); }
+
+        .evidence-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+        .evidence-card { background: var(--surface); border: 1px solid #333; padding: 10px; position: relative; transition: 0.2s; }
+        .evidence-card:hover { border-color: var(--accent); }
+        .evidence-card img, .evidence-card video { width: 100%; height: 280px; object-fit: contain; background: #050505; }
+        
+        .card-meta { margin-top: 10px; font-size: 0.7rem; color: #555; display: flex; justify-content: space-between; }
+
+        /* شاشة الـ Terminal في الأسفل */
+        .live-console {
+            position: fixed; bottom: 20px; right: 20px; width: 350px; height: 150px;
+            background: rgba(0,0,0,0.9); border: 1px solid #333; padding: 15px;
+            font-size: 0.7rem; color: #0f0; overflow-y: hidden; z-index: 1000;
         }
-        .download-btn:hover { background: var(--red); color: #000; box-shadow: 0 0 100px var(--red); }
+
+        .btn-extract {
+            background: transparent; border: 1px solid var(--accent); color: var(--accent);
+            padding: 20px 40px; text-decoration: none; display: block; width: fit-content;
+            margin: 60px auto; transition: 0.3s; font-size: 1rem;
+        }
+        .btn-extract:hover { background: var(--accent); color: #000; font-weight: bold; }
+
     </style>
 </head>
 <body>
 
-    <div id="tracker">
-        [ SYSTEM_STATUS: MONITORING ]<br>
-        > CONNECTION: ACTIVE<br>
-        > PACKETS: INTERCEPTED<br>
-        > TARGET_OS: <span id="user-os">DETECTING...</span><br>
-        > TRACING_ROUTE...<br>
-        <span id="random-ip"></span>
+    <div class="top-bar">
+        <span>UNIT: CYBER_JUSTICE</span>
+        <span>STATUS: MONITORING_ACTIVE</span>
+        <span id="clock">00:00:00</span>
     </div>
-
-    <header>
-        <div class="alert-banner">CRITICAL_SECURITY_BREACH // UNAUTHORIZED_ACCESS_DETECTED</div>
-        <h1 class="glitch-large">TARGET: JET</h1>
-        <p style="color: var(--neon-green); letter-spacing: 5px;">LOCATION_LOCKED: SPAIN_GRID_82.11</p>
-    </header>
 
     <div class="container">
-        <div style="border: 1px dotted var(--red); padding: 30px; margin-bottom: 50px; background: rgba(20,0,0,0.4);">
-            <h3 style="color: var(--red); margin-top: 0;">💀 SUBJECT_DOSSIER: JET</h3>
-            <p>NAME: JET [REDACTED]<br>KNOWN_FOR: DISCORD_NUKING, MALICIOUS_LOGGING<br>THREAT_LEVEL: BLACK_LISTED</p>
+        
+        <div class="target-profile">
+            <div class="target-avatar">
+                <img src="assets/Jet%20main%20account!.png" style="width: 90%; filter: contrast(1.5) grayscale(1);">
+            </div>
+            <div>
+                <h2 style="margin: 0 0 20px 0; color: var(--accent);">IDENTIFIED_SUBJECT: JET</h2>
+                <table class="data-table">
+                    <tr><td class="key">Origin:</td><td class="val">SPAIN [ES]</td></tr>
+                    <tr><td class="key">Known Vector:</td><td class="val">DISCORD_NUKER / LOGGER_DISTRIBUTION</td></tr>
+                    <tr><td class="key">Risk Level:</td><td class="val">CRITICAL_THREAT</td></tr>
+                    <tr><td class="key">Database ID:</td><td class="val">#992-JET-EXPOSED</td></tr>
+                </table>
+            </div>
         </div>
 
-        <div class="grid">
-            <div class="card">
+        <div class="section-label">FORENSIC_VIDEO_ANALYSIS</div>
+        <div class="evidence-grid" style="margin-bottom: 50px;">
+            <div class="evidence-card">
                 <video controls><source src="video/proof%20vedio.webm" type="video/webm"></video>
-                <div class="label">RECORDING_A_SURVEILLANCE</div>
+                <div class="card-meta"><span>VID_01.WEBM</span><span>HASH: D82..A1</span></div>
             </div>
-            <div class="card">
+            <div class="evidence-card">
                 <video controls><source src="video/proof%20vedio%20%232.webm" type="video/webm"></video>
-                <div class="label">RECORDING_B_SURVEILLANCE</div>
+                <div class="card-meta"><span>VID_02.WEBM</span><span>HASH: F01..E9</span></div>
             </div>
-
-            <div class="card"><img src="assets/Jet%20main%20account!.png"><div class="label">EVIDENCE_MAIN_ACC</div></div>
-            <div class="card"><img src="assets/HOW%20to%20feind%20loggers%20%231.png"><div class="label">LOG_REPORT_01</div></div>
-            <div class="card"><img src="assets/My%20nuked%20server.png"><div class="label">IMPACT_ZONE_01</div></div>
         </div>
 
-        <a href="https://github.com/DanneKZ/jet_exposse/archive/refs/heads/main.zip" class="download-btn">EXTRACT_FULL_DB.ZIP</a>
+        <div class="section-label">DOCUMENTED_EXHIBITS</div>
+        <div class="evidence-grid">
+            <div class="evidence-card">
+                <img src="assets/HOW%20to%20feind%20loggers%20%231.png">
+                <div class="card-meta"><span>EXHIBIT_A</span><span>MD5_VERIFIED</span></div>
+            </div>
+            <div class="card"><img src="assets/all%20jets%20accounts!.png"></div>
+            <div class="evidence-card">
+                <img src="assets/My%20nuked%20server.png">
+                <div class="card-meta"><span>CRIME_SCENE_DATA</span><span>TIMESTAMP: 2026-04-27</span></div>
+            </div>
+        </div>
+
+        <a href="https://github.com/DanneKZ/jet_exposse/archive/refs/heads/main.zip" class="btn-extract">EXTRACT_FULL_ARCHIVE_DATA</a>
+
     </div>
 
+    <div class="live-console" id="console"></div>
+
     <script>
-        // سكريبت إظهار معلومات "وهمية" مرعبة للزائر
-        document.getElementById('user-os').innerText = navigator.platform;
-        
+        // ساعة النظام
         setInterval(() => {
-            const ip = "TRACE: " + Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255);
-            document.getElementById('random-ip').innerText = ip;
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString();
         }, 1000);
 
-        // منع السرقة أو فحص الكود (حرب نفسية)
-        document.onkeydown = function(e) {
-            if(e.keyCode == 123) return false; // F12
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false; // Ctrl+Shift+I
-        };
+        // سجل العمليات الوهمي الاحترافي
+        const consoleEl = document.getElementById('console');
+        const logs = [
+            "[INFO] Establishing secure link to Spain Node...",
+            "[SUCCESS] Handshake complete.",
+            "[INFO] Fetching target metadata...",
+            "[WARN] Target attempting to mask IP via VPN...",
+            "[SYSTEM] Bypassing proxy... Success.",
+            "[INFO] Logging visitor session ID: " + Math.random().toString(36).substring(7),
+            "[DATA] Correlating Discord ID with documented alts...",
+            "[DATABASE] 14 Files synchronized."
+        ];
+        
+        let logIndex = 0;
+        function addLog() {
+            const p = document.createElement('div');
+            p.innerText = logs[logIndex % logs.length];
+            consoleEl.appendChild(p);
+            if (consoleEl.children.length > 8) consoleEl.removeChild(consoleEl.firstChild);
+            logIndex++;
+            setTimeout(addLog, Math.random() * 3000 + 1000);
+        }
+        addLog();
     </script>
 </body>
 </html>
